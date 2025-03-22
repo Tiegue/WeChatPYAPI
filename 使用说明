@@ -1,0 +1,57 @@
+Python爬取微信朋友圈内容
+羊咩咩
+羊咩咩
+5 人赞同了该文章
+无意中发现个超好用的项目，python居然也能读取到朋友圈的内容
+
+
+使用方法如下：
+# Github地址：https://github.com/mrsanshui/WeChatPYAPI
+# 码云地址：https://gitee.com/mrsanshui/WeChatPYAPI
+# 从git上下载后，导入包
+from WeChatPYAPI import WeChatPYApi
+
+# 实例化api对象
+wx = WeChatPYApi(msg_callback=on_message, exit_callback=on_exit)
+
+# 启动微信【调试模式可不调用该方法】
+errno, errmsg = wx.start_wx()
+if errno != 0:
+	print(errmsg)
+	if errmsg != "当前为调试模式，不需要调用“start_wx”":
+		return
+
+# 这里需要阻塞，等待获取个人信息
+while not wx.get_self_info():
+    time.sleep(2)
+
+# 获取个人信息
+my_info = wx.get_self_info()
+print("登陆成功！")
+print(my_info)
+
+# 获取朋友圈数据
+moments = wx.get_moments()
+if not moments:
+    print("没有最新的朋友圈")
+else:
+    for item in moments:
+        print(item)
+
+# 朋友圈点赞/取消点赞
+wx.like_moments(
+    moments_id="130000",
+    state=True
+)
+
+# 朋友圈评论
+wx.comment_moments(
+    moments_id="1300000",
+    content="我是评论内容"
+)
+
+# 朋友圈删除评论
+wx.del_comment_moments(
+    moments_id="1300000",
+    comment_id="3"
+)
